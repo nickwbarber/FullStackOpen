@@ -16,21 +16,22 @@ const Part = (props) => {
 const Content = (props) => {
   return (
     <>
-      <Part name={props.parts[0].name} exercises={props.parts[0].exercises} />
-      <Part name={props.parts[1].name} exercises={props.parts[1].exercises} />
-      <Part name={props.parts[2].name} exercises={props.parts[2].exercises} />
+      {props.parts.map(part => (
+        <Part name={part.name} exercises={part.exercises} />
+      ))}
     </>
   )
 }
 
+
 const Total = (props) => {
+  const sum = (a, b) => a + b
   return (
     <p>
       Number of exercises {
-        0
-        + props.parts[0].exercises
-        + props.parts[1].exercises
-        + props.parts[2].exercises
+        props.parts
+        .map(part => part.exercises)
+        .reduce(sum, 0)
       }
     </p>
   )
@@ -58,12 +59,8 @@ const App = () => {
   return (
     <div>
       <Header course={course} />
-      <Content
-        parts={parts}
-      />
-      <Total
-        parts={parts}
-      />
+      <Content parts={parts} />
+      <Total parts={parts} />
     </div>
   )
 }
