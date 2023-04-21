@@ -20,22 +20,22 @@ const Button = ({ label, handleClick }) => {
   )
 }
 
-const Stat = ({ label, count }) => <div>{label} {count}</div>
+const StatisticLine = ({ label, count }) => <div>{label} {count}</div>
 
-const StatDisplay = ({ stats }) => {
+const Statistics = ({ stats }) => {
   if (stats.good === 0 && stats.neutral === 0 && stats.bad === 0) {
-    return (<div class="StatsDisplay">
+    return (<div>
       No feedback given
     </div>)
   }
   return (
-    <div class="StatsDisplay">
-      <Stat label="good"      count={stats.good} />
-      <Stat label="neutral"   count={stats.neutral} />
-      <Stat label="bad"       count={stats.bad} />
-      <Stat label="total"     count={stats.good + stats.bad + stats.neutral} />
-      <Stat label="average"   count={calcAverage(stats.good, stats.bad, stats.neutral)} />
-      <Stat label="positive"  count={calcPercentPositive(stats.good, stats.bad, stats.neutral) + ' %'} />
+    <div>
+      <StatisticLine label="good"      count={stats.good} />
+      <StatisticLine label="neutral"   count={stats.neutral} />
+      <StatisticLine label="bad"       count={stats.bad} />
+      <StatisticLine label="total"     count={stats.good + stats.bad + stats.neutral} />
+      <StatisticLine label="average"   count={calcAverage(stats.good, stats.bad, stats.neutral)} />
+      <StatisticLine label="positive"  count={calcPercentPositive(stats.good, stats.bad, stats.neutral) + ' %'} />
     </div>
   )
 }
@@ -58,7 +58,7 @@ const App = () => {
       <Button label="bad" handleClick={incBad}/>
 
       <h1>statistics</h1>
-      <StatDisplay stats={{"good":good, "neutral":neutral, "bad":bad}}/>
+      <Statistics stats={{"good":good, "neutral":neutral, "bad":bad}}/>
     </div>
   );
 }
