@@ -23,6 +23,11 @@ const Button = ({ label, handleClick }) => {
 const Stat = ({ label, count }) => <div>{label} {count}</div>
 
 const StatDisplay = ({ stats }) => {
+  if (stats.good === 0 && stats.neutral === 0 && stats.bad === 0) {
+    return (<div class="StatsDisplay">
+      No feedback given
+    </div>)
+  }
   return (
     <div class="StatsDisplay">
       <Stat label="good"      count={stats.good} />
