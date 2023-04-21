@@ -1,12 +1,39 @@
 import { useState } from "react";
 
+const calcAverage = (good, bad, neutral) => {
+  if (good === 0 && bad === 0) {
+    return 0
+  }
+  return ((good - bad) / (good + neutral + bad))
+}
+
+const calcPercentPositive = (good, bad, neutral) => {
+  if (good === 0 && bad === 0) {
+    return 0
+  }
+  return (good / (good + bad + neutral))
+}
+
 const Button = ({ label, handleClick }) => {
   return (
     <button onClick={handleClick}>{label}</button>
   )
 }
 
-const StatDisplay = ({ label, count }) => <div>{label} {count}</div>
+const Stat = ({ label, count }) => <div>{label} {count}</div>
+
+const StatDisplay = ({ stats }) => {
+  return (
+    <div class="StatsDisplay">
+      <Stat label="good"      count={stats.good} />
+      <Stat label="neutral"   count={stats.neutral} />
+      <Stat label="bad"       count={stats.bad} />
+      <Stat label="total"     count={stats.good + stats.bad + stats.neutral} />
+      <Stat label="average"   count={calcAverage(stats.good, stats.bad, stats.neutral)} />
+      <Stat label="positive"  count={calcPercentPositive(stats.good, stats.bad, stats.neutral) + ' %'} />
+    </div>
+  )
+}
 
 const App = () => {
   const [ good, setGood ] = useState(0)
@@ -16,19 +43,6 @@ const App = () => {
   const incGood = () => setGood(good + 1)
   const incBad = () => setBad(bad + 1)
   const incNeutral = () => setNeutral(neutral + 1)
-  const calcAverage = (good, bad, neutral) => {
-    if (good === 0 && bad === 0) {
-      return 0 
-    }
-    return ((good - bad) / (good + neutral + bad))
-  }
-  const calcPercentPositive = (good, bad, neutral) => {
-    if (good === 0 && bad === 0) {
-      return 0 
-    }
-    return (good / (good + bad + neutral))
-  }
-
 
   return (
     <div>
@@ -39,12 +53,7 @@ const App = () => {
       <Button label="bad" handleClick={incBad}/>
 
       <h1>statistics</h1>
-      <StatDisplay label="good" count={good} />
-      <StatDisplay label="neutral" count={neutral} />
-      <StatDisplay label="bad" count={bad} />
-      <StatDisplay label="total" count={good + bad + neutral} />
-      <StatDisplay label="average" count={calcAverage(good, bad, neutral)} />
-      <StatDisplay label="positive" count={calcPercentPositive(good, bad, neutral) + ' %'} />
+      <StatDisplay stats={{"good":good, "neutral":neutral, "bad":bad}}/>
     </div>
   );
 }
