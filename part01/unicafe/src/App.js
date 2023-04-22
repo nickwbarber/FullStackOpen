@@ -1,17 +1,19 @@
 import { useState } from "react";
 
-const calcAverage = (good, bad, neutral) => {
-  if (good === 0 && bad === 0) {
+// { good, bad, neutral } => Number
+const calcAverage = (stats) => {
+  if (stats.good === 0 && stats.bad === 0) {
     return 0
   }
-  return ((good - bad) / (good + neutral + bad))
+  return ((stats.good - stats.bad) / (stats.good + stats.neutral + stats.bad))
 }
 
-const calcPercentPositive = (good, bad, neutral) => {
-  if (good === 0 && bad === 0) {
+// { good, bad, neutral } => Number
+const calcPercentPositive = (stats) => {
+  if (stats.good === 0 && stats.bad === 0) {
     return 0
   }
-  return (good / (good + bad + neutral))
+  return (stats.good / (stats.good + stats.bad + stats.neutral))
 }
 
 const Button = ({ label, handleClick }) => {
@@ -20,45 +22,95 @@ const Button = ({ label, handleClick }) => {
   )
 }
 
-const StatisticLine = ({ label, count }) => <div>{label} {count}</div>
-
-const Statistics = ({ stats }) => {
-  if (stats.good === 0 && stats.neutral === 0 && stats.bad === 0) {
-    return (<div>
-      No feedback given
-    </div>)
-  }
+const StatisticRow = ({ label, count }) => {
   return (
-    <div>
-      <StatisticLine label="good"      count={stats.good} />
-      <StatisticLine label="neutral"   count={stats.neutral} />
-      <StatisticLine label="bad"       count={stats.bad} />
-      <StatisticLine label="total"     count={stats.good + stats.bad + stats.neutral} />
-      <StatisticLine label="average"   count={calcAverage(stats.good, stats.bad, stats.neutral)} />
-      <StatisticLine label="positive"  count={calcPercentPositive(stats.good, stats.bad, stats.neutral) + ' %'} />
-    </div>
+    <tr>
+      <td>{label}</td>
+      <td>{count}</td>
+    </tr>
   )
 }
 
-const App = () => {
-  const [ good, setGood ] = useState(0)
-  const [ bad, setBad ] = useState(0)
-  const [ neutral, setNeutral ] = useState(0)
+const Statistics = ({ stats }) => {
+  if (stats.good === 0 && stats.neutral === 0 && stats.bad === 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
 
-  const incGood = () => setGood(good + 1)
-  const incBad = () => setBad(bad + 1)
-  const incNeutral = () => setNeutral(neutral + 1)
+  return (
+    <table>
+    <thead>
+      <tr>
+        <td>name</td>
+        <td>number</td>
+      </tr>
+    </thead>
+    <tbody>
+      <StatisticRow label={"good"} count={stats.good} />
+      <StatisticRow label={"neutral"} count={stats.neutral} />
+      <StatisticRow label={"bad"} count={stats.bad} />
+      <StatisticRow label={"all"} count={stats.total} />
+      <StatisticRow label={"average"} count={stats.average} />
+      <StatisticRow label={"percent positive"} count={stats.percentPositive} />
+    </tbody>
+    </table>
+  )
+}
+
+
+const App = () => {
+  const [ stats, setStats ] = useState({
+    "good" : 0,
+    "bad" : 0,
+    "neutral" : 0,
+    "total" : 0,
+    "average" : 0,
+    "percentPositive" : 0,
+  })
+
+  const incGood = (stats) => {
+    setStats({
+      ...stats,
+      good: stats.good + 1,
+      total: stats.total + 1,
+      average: calcAverage(stats),
+      percentPositive: calcPercentPositive(stats),
+    })
+  }
+
+  const incBad = (stats) => {
+    setStats({
+      ...stats,
+      bad: stats.bad + 1,
+      total: stats.total + 1,
+      average: calcAverage(stats),
+      percentPositive: calcPercentPositive(stats),
+    })
+  }
+
+  const incNeutral = (stats) => {
+    setStats({
+      ...stats,
+      neutral: stats.neutral + 1,
+      total: stats.total + 1,
+      average: calcAverage(stats),
+      percentPositive: calcPercentPositive(stats),
+    })
+  }
 
   return (
     <div>
       <h1>give feedback</h1>
 
-      <Button label="good" handleClick={incGood}/>
-      <Button label="neutral" handleClick={incNeutral}/>
-      <Button label="bad" handleClick={incBad}/>
+      <Button label="good" handleClick={() => incGood(stats)}/>
+      <Button label="neutral" handleClick={() => incNeutral(stats)}/>
+      <Button label="bad" handleClick={() => incBad(stats)}/>
 
       <h1>statistics</h1>
-      <Statistics stats={{"good":good, "neutral":neutral, "bad":bad}}/>
+      <Statistics stats={stats}/>
     </div>
   );
 }
