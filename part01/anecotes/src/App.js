@@ -18,22 +18,41 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
   
-  const getRandomAnecdote = () => {
-    return anecdotes[Math.round(Math.random() * (anecdotes.length - 1))]
+  const getRandomAnecdoteIndex = () => {
+    return Math.round(Math.random() * (anecdotes.length - 1))
   }
-
-  const [selected, setSelected] = useState(getRandomAnecdote())
-  
   
   const nextAnecdote = () => {
-    setSelected(getRandomAnecdote())
+    const newSelectedIndex = getRandomAnecdoteIndex()
+    setSelectedIndex(newSelectedIndex)
+    setSelected(anecdotes[newSelectedIndex])
   }
+
+  const submitVote = () => {
+    const newVotes = { ...votes }
+    newVotes[selectedIndex] += 1
+    setVotes(newVotes)
+  }
+  
+  const [selectedIndex, setSelectedIndex] = useState(getRandomAnecdoteIndex())
+  const [selected, setSelected] = useState(anecdotes[selectedIndex])
+  const [votes, setVotes ] = useState(
+    Array(anecdotes.length).fill(0)
+    .reduce(
+      (votes, _, i) => {
+        votes[i] = 0
+        return votes
+      },
+      {}
+    )
+  )
 
   return (
     <>
     <div>
       {selected}
     </div>
+    <Button label="vote" handleClick={submitVote} />
     <Button label="next anecdote" handleClick={nextAnecdote} />
     </>
   )
