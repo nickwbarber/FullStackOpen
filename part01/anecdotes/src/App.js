@@ -32,19 +32,26 @@ const App = () => {
     const newVotes = [...votes ]
     newVotes[selectedIndex] += 1
     setVotes(newVotes)
+    if (votes[selectedIndex] > greatestNumberOfVotes) {
+      setTopVotedIndex(selectedIndex)
+      setGreatestNumberOfVotes(greatestNumberOfVotes + 1)
+    }
   }
   
   const [selectedIndex, setSelectedIndex] = useState(getRandomAnecdoteIndex())
   const [selected, setSelected] = useState(anecdotes[selectedIndex])
   const [votes, setVotes ] = useState(Array(anecdotes.length).fill(0))
+  const [topVotedIndex, setTopVotedIndex] = useState(0)
+  const [greatestNumberOfVotes, setGreatestNumberOfVotes] = useState(-1)
 
   return (
     <>
-    <div>
-      {selected}
-    </div>
+    <h1>Anecdote of the day</h1>
+    <p>{selected}</p>
     <Button label="vote" handleClick={submitVote} />
     <Button label="next anecdote" handleClick={nextAnecdote} />
+    <h1>Top voted</h1>
+    <p>{anecdotes[topVotedIndex]}</p>
     </>
   )
 }
