@@ -29,23 +29,14 @@ const App = () => {
   }
 
   const submitVote = () => {
-    const newVotes = { ...votes }
+    const newVotes = [...votes ]
     newVotes[selectedIndex] += 1
     setVotes(newVotes)
   }
   
   const [selectedIndex, setSelectedIndex] = useState(getRandomAnecdoteIndex())
   const [selected, setSelected] = useState(anecdotes[selectedIndex])
-  const [votes, setVotes ] = useState(
-    Array(anecdotes.length).fill(0)
-    .reduce(
-      (votes, _, i) => {
-        votes[i] = 0
-        return votes
-      },
-      {}
-    )
-  )
+  const [votes, setVotes ] = useState(Array(anecdotes.length).fill(0))
 
   return (
     <>
