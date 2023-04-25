@@ -2,9 +2,8 @@ import { useState } from 'react'
 
 const defaultInputString = 'enter name here...'
 
-const PhonebookListing = ({ name }) => {
-  <div>{name}</div>
-}
+const PhonebookListing = ({ person }) =>
+  <div>{person.name}</div>
 
 const App = () => {
   const [ persons, setPersons ] = useState([
@@ -18,14 +17,14 @@ const App = () => {
     setPersons([...persons, {name: newName}])
     setName('')
   }
-  
+
   const handleInputFocus = e => {
     if (newName === defaultInputString) {
       setName('')
       return
     }
   }
-  
+
   const handleInputBlur = e => {
     if (newName === '') {
       setName(defaultInputString)
@@ -38,7 +37,7 @@ const App = () => {
       <form onSubmit={handleSubmit}>
         <div>
           name: <input
-            value={newName} 
+            value={newName}
             onChange={e => setName(e.target.value)}
             onFocus={handleInputFocus}
             onBlur={handleInputBlur}
@@ -50,7 +49,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>
-        {persons.map(p => <div key={p.name}>{p.name}</div>)}
+        {persons.map((p, i) => <PhonebookListing key={i} person={p} />)}
       </div>
     </div>
   );
