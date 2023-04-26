@@ -1,43 +1,59 @@
 import { useState } from 'react'
 
-const defaultInputString = 'enter name here...'
+const defaultNameString = 'enter name here...'
+const defaultPhonenumberString = '555-555-5555'
 
 const PhonebookListing = ({ person }) =>
-  <div>{person.name}</div>
+  <div>{person.name} {person.number}</div>
 
 const App = () => {
   const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas' },
+    { name: 'Arto Hellas', number: '555-555-5555'},
   ])
 
-  const [ newName, setName ] = useState(defaultInputString)
+  const [ newName, setName ] = useState(defaultNameString)
+  const [ newPhonenumber, setPhonenumber ] = useState(defaultPhonenumberString)
 
   const handleSubmit = e => {
     e.preventDefault()
+    
+    // no blank or default entries
+    if ((newName === '') || (newName === defaultNameString)) {
+      setName('')
+      return
+    }
+
+    // prevent duplicate names
     if (persons.map(p => p.name).includes(newName)) {
-      alert("noooo")
+      alert(`${newName} is already in the phonebook!`)
       setName('')
       return
     }
-    setPersons([...persons, {name: newName}])
+
+    // happy path
+    setPersons([...persons, {name: newName, number: newPhonenumber}])
     setName('')
+    setPhonenumber('')
   }
 
-  const handleInputFocus = e => {
-    if (newName === defaultInputString) {
-      setName('')
+  const handleInputFocus = (value, setter, defaultString) => () => {
+    if (value === defaultString) {
+      setter('')
       return
     }
   }
 
-  const handleInputBlur = e => {
-    if (newName === '') {
-      setName(defaultInputString)
+  const handleInputBlur = (value, setter, defaultString) => () => {
+    if (value === '') {
+      setter(defaultString)
     }
   }
   
-  const validatePhoneBookListing = name => 
-    persons.includes(name)
+  // input focus + blur handlers
+  const handleNameInputOnFocus = handleInputFocus(newName, setName, defaultNameString)
+  const handleNameInputOnBlur = handleInputBlur(newName, setName, defaultNameString)
+  const handlePhonenumberInputOnFocus = handleInputFocus(newPhonenumber, setPhonenumber, defaultPhonenumberString)
+  const handlePhonenumberInputOnBlur = handleInputBlur(newPhonenumber, setPhonenumber, defaultPhonenumberString)
   
   return (
     <div>
@@ -47,8 +63,16 @@ const App = () => {
           name: <input
             value={newName}
             onChange={e => setName(e.target.value)}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
+            onFocus={handleNameInputOnFocus}
+            onBlur={handleNameInputOnBlur}
+          />
+        </div>
+        <div>
+          number: <input
+            value={newPhonenumber}
+            onChange={e => setPhonenumber(e.target.value)}
+            onFocus={handlePhonenumberInputOnFocus}
+            onBlur={handlePhonenumberInputOnBlur}
           />
         </div>
         <div>
