@@ -14,6 +14,11 @@ const App = () => {
 
   const handleSubmit = e => {
     e.preventDefault()
+    if (persons.map(p => p.name).includes(newName)) {
+      alert("noooo")
+      setName('')
+      return
+    }
     setPersons([...persons, {name: newName}])
     setName('')
   }
@@ -30,7 +35,10 @@ const App = () => {
       setName(defaultInputString)
     }
   }
-
+  
+  const validatePhoneBookListing = name => 
+    persons.includes(name)
+  
   return (
     <div>
       <h2>Phonebook</h2>
