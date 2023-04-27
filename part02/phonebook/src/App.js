@@ -6,6 +6,11 @@ const defaultPhonenumberString = '555-555-5555'
 const PhonebookListing = ({ person }) =>
   <div>{person.name} {person.number}</div>
 
+const PhonebookView = ({ persons, query }) =>
+  persons
+  .filter(person => query ? person.name.toLowerCase().startsWith(query.toLowerCase()) : true)
+  .map((person, i) => <PhonebookListing key={i} person={person}></PhonebookListing>)
+
 const App = () => {
   const [ persons, setPersons ] = useState([
     { name: 'Arto Hellas', number: '555-555-5555'},
@@ -13,10 +18,11 @@ const App = () => {
 
   const [ newName, setName ] = useState(defaultNameString)
   const [ newPhonenumber, setPhonenumber ] = useState(defaultPhonenumberString)
+  const [ query, setQuery ] = useState('')
 
   const handleSubmit = e => {
     e.preventDefault()
-    
+
     // no blank or default entries
     if ((newName === '') || (newName === defaultNameString)) {
       setName('')
@@ -48,17 +54,18 @@ const App = () => {
       setter(defaultString)
     }
   }
-  
+
   // input focus + blur handlers
   const handleNameInputOnFocus = handleInputFocus(newName, setName, defaultNameString)
   const handleNameInputOnBlur = handleInputBlur(newName, setName, defaultNameString)
   const handlePhonenumberInputOnFocus = handleInputFocus(newPhonenumber, setPhonenumber, defaultPhonenumberString)
   const handlePhonenumberInputOnBlur = handleInputBlur(newPhonenumber, setPhonenumber, defaultPhonenumberString)
-  
+
   return (
     <div>
       <h2>Phonebook</h2>
       <form onSubmit={handleSubmit}>
+        <h3>new entry</h3>
         <div>
           name: <input
             value={newName}
@@ -80,8 +87,12 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
+      <h3>Filter by name: </h3>
       <div>
-        {persons.map((p, i) => <PhonebookListing key={i} person={p} />)}
+        <input value={query} onChange={e => setQuery(e.target.value)}></input>
+      </div>
+      <div>
+        <PhonebookView persons={persons} query={query}></PhonebookView>
       </div>
     </div>
   );
