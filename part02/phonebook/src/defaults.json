@@ -1,6 +1,6 @@
 {
     "name": "enter name here...",
-    "phone": "555-555-5555",
+    "phonenumber": "555-555-5555",
     "persons": [{
         "name": "Arto Hellas",
         "number": "555-555-5555"

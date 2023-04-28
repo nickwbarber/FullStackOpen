@@ -7,7 +7,7 @@ import QueryForm      from './components/QueryForm'
 const App = () => {
   const nameState         = NewState(defaults.name)
   const personsState      = NewState(defaults.persons)
-  const phonenumberState  = NewState(defaults.number)
+  const phonenumberState  = NewState(defaults.phonenumber)
   const queryState        = NewState(defaults.query)
 
   return (
