@@ -1,9 +1,7 @@
 {
     "name": "enter name here...",
     "phonenumber": "555-555-5555",
-    "persons": [{
-        "name": "Arto Hellas",
-        "number": "555-555-5555"
-    }],
-    "query": ""
+    "persons": [],
+    "query": "",
+    "serverUrl": "http://localhost:3001"
 }
