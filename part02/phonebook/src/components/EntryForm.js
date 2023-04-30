@@ -40,6 +40,7 @@ const EntryForm = ({ nameState, phonenumberState, personsState }) => {
     }
 
     // happy path
+    // TODO: update backend when a new number is submitted via this form
     personsState.setter([...personsState.value, {name: nameState.value, number: phonenumberState.value}])
     nameState.setter('')
     phonenumberState.setter('')
