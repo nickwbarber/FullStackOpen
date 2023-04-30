@@ -1,3 +1,5 @@
+import phonebookServices from '../services/phonebook'
+
 const handleInputFocus = ({ value, setter, defaultValue }) => () => {
   if (value === defaultValue) {
     setter('')
@@ -23,31 +25,15 @@ const EntryForm = ({ nameState, phonenumberState, personsState }) => {
   const nameInputHandler        = getInputHandler(nameState)
   const phonenumberInputHandler = getInputHandler(phonenumberState)
 
-  const handleSubmit = e => {
-    e.preventDefault()
-
-    // no blank or default entries
-    if ((nameState.value === '') || (nameState.value === nameState.defaultValue)) {
-      nameState.setter('')
-      return
-    }
-
-    // prevent duplicate names
-    if (personsState.value.map(p => p.name).includes(nameState.value)) {
-      alert(`${nameState.value} is already in the phonebook!`)
-      nameState.setter('')
-      return
-    }
-
-    // happy path
-    // TODO: update backend when a new number is submitted via this form
-    personsState.setter([...personsState.value, {name: nameState.value, number: phonenumberState.value}])
-    nameState.setter('')
-    phonenumberState.setter('')
-  }
+  // TODO: replace with a service that uses the
+  const state = [
+    nameState,
+    phonenumberState,
+    personsState,
+  ]
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={phonebookServices.handleSubmit(nameState, phonenumberState, personsState)}>
       <h3>new entry</h3>
       <div>
         name: <input
