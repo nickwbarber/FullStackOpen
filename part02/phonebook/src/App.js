@@ -1,12 +1,12 @@
 // external libraries
 import { useEffect } from 'react'
-import axios from 'axios'
 
 // defaults
 import defaults from './defaults.json'
 
 // helper functions
 import NewState from './util'
+import phonebookServices from './services/phonebook'
 
 // components
 import PhonebookView  from './components/PhonebookView'
@@ -20,13 +20,13 @@ const App = () => {
   const phonenumberState  = NewState(defaults.phonenumber)
   const queryState        = NewState(defaults.query)
 
+  // fetch persons from database
   useEffect(() => {
-    axios
-    .get(`${defaults.serverUrl}/persons`)
-    .then(response => {
-      personsState.setter(response.data)
+    phonebookServices
+    .getAll()
+    .then(returnedPersons => {
+      personsState.setter(returnedPersons)
     })
-  // }, [personsState])
   }, [])
 
   return (
