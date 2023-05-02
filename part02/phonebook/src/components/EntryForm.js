@@ -1,4 +1,4 @@
-import phonebookServices from '../services/phonebook'
+import { handleSubmit } from '../services/phonebook'
 
 const handleInputFocus = ({ value, setter, defaultValue }) => () => {
   if (value === defaultValue) {
@@ -26,7 +26,7 @@ const EntryForm = ({ nameState, phonenumberState, personsState }) => {
   const phonenumberInputHandler = getInputHandler(phonenumberState)
 
   return (
-    <form onSubmit={phonebookServices.handleSubmit(nameState, phonenumberState, personsState)}>
+    <form onSubmit={handleSubmit(nameState, phonenumberState, personsState)}>
       <h3>new entry</h3>
       <div>
         name: <input

@@ -6,7 +6,7 @@ import defaults from './defaults.json'
 
 // helper functions
 import NewState from './util'
-import phonebookServices from './services/phonebook'
+import { getAll } from './services/phonebook'
 
 // components
 import PhonebookView  from './components/PhonebookView'
@@ -19,11 +19,10 @@ const App = () => {
   const personsState      = NewState(defaults.persons)
   const phonenumberState  = NewState(defaults.phonenumber)
   const queryState        = NewState(defaults.query)
-
+  
   // fetch persons from database
   useEffect(() => {
-    phonebookServices
-    .getAll()
+    getAll()
     .then(returnedPersons => {
       personsState.setter(returnedPersons)
     })
@@ -49,7 +48,7 @@ const App = () => {
       </div>
       <div>
         <PhonebookView
-          persons={personsState.value}
+          personsState={personsState}
           query={queryState.value}>
         </PhonebookView>
       </div>
