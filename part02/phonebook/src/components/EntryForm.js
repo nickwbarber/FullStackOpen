@@ -25,13 +25,6 @@ const EntryForm = ({ nameState, phonenumberState, personsState }) => {
   const nameInputHandler        = getInputHandler(nameState)
   const phonenumberInputHandler = getInputHandler(phonenumberState)
 
-  // TODO: replace with a service that uses the
-  const state = [
-    nameState,
-    phonenumberState,
-    personsState,
-  ]
-
   return (
     <form onSubmit={phonebookServices.handleSubmit(nameState, phonenumberState, personsState)}>
       <h3>new entry</h3>
