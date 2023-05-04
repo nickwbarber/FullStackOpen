@@ -43,11 +43,25 @@ export const handleSubmit = (nameState, phonenumberState, personsState) => event
     return
   }
 
-  // prevent duplicate names
-  if (personsState.value.map(p => p.name).includes(nameState.value)) {
-    alert(`${nameState.value} is already in the phonebook!`)
+  // person already in phonebook?
+  // ask user if they want to update listing
+  const matchingPerson = personsState.value.find(p => p.name.toLowerCase() === nameState.value.toLowerCase())
+  if (matchingPerson) {
+    const updatedPerson = { ...matchingPerson, "number": phonenumberState.value}
+
+    update(matchingPerson.id, updatedPerson)
+
     nameState.setter('')
     phonenumberState.setter('')
+    
+    personsState.setter(
+      personsState.value
+      .map(originalPerson => originalPerson.id === matchingPerson.id
+        ? updatedPerson
+        : originalPerson
+      )
+    )
+    
     return
   }
   
