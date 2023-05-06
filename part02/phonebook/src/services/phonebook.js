@@ -8,7 +8,7 @@ export const getAll = () =>
   axios.get(defaults.serverUrl).then(res => res.data)
 
 export const update = (id, newObject) =>
-  axios.put(`${defaults.serverUrl}/${id}`, newObject).then(res => res.data)
+  axios.put(`${defaults.serverUrl}/${id}`, newObject)
 
 export const create = (newObject) =>
   axios.post(defaults.serverUrl, newObject).then(res => res.data)
@@ -54,23 +54,24 @@ export const handleSubmit = (nameState, phonenumberState, personsState, messageS
   if (matchingPerson) {
     // ask user if they want to update listing
     update(matchingPerson.id, {...matchingPerson, 'number': phonenumberState.value})
-    .then(updatedPerson => {
+    .then(res => {
       messageState.setter(`${matchingPerson.name}'s entry was successfully updated!`)
       nameState.setter('')
       phonenumberState.setter('')
       personsState.setter(
         personsState.value
         .map(originalPerson => originalPerson.id === matchingPerson.id
-          ? updatedPerson
+          ? res.data
           : originalPerson
         )
       )
     })
-    .catch(reason => {
-      messageState.setter('There was an error!')
-      console.log(`Couldn't update person ${matchingPerson.id}: ${reason}`)
+    .catch(error => {
+      error.response.status === 404
+        ? messageState.setter('Already deleted!')
+        : messageState.setter('There was an error!')
+      console.log(`Couldn't update person ${matchingPerson.id}: ${error.response.status}`)
     })
-    
     return
   }
   
