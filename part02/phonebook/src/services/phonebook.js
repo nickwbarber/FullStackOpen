@@ -3,6 +3,7 @@ import defaults from '../defaults.json'
 import { max } from '../util'
 
 
+// server actions
 export const getAll = () =>
   axios.get(defaults.serverUrl).then(res => res.data)
 
@@ -15,6 +16,11 @@ export const create = (newObject) =>
 export const deleteEntry = id =>
   axios.delete(`${defaults.serverUrl}/${id}`).then(res => res.data)
 
+// helpers
+const personInPhonebook = (nameToMatch, phonebook) => 
+  phonebook.find(p => p.name.toLowerCase() === nameToMatch.toLowerCase())
+
+// handlers
 export const handleDelete = (idToDelete, personsState) => event => {
   const personToDelete = personsState.value.find(person => person.id === idToDelete)
 
@@ -27,10 +33,10 @@ export const handleDelete = (idToDelete, personsState) => event => {
   })
 }
 
-export const handleSubmit = (nameState, phonenumberState, personsState) => event => {
+export const handleSubmit = (nameState, phonenumberState, personsState, messageState) => event => {
   event.preventDefault()
 
-  // no blank or default entries
+  // Don't allow blank or default entries
   if (
     (
       (nameState.value === '')
@@ -43,35 +49,39 @@ export const handleSubmit = (nameState, phonenumberState, personsState) => event
     return
   }
 
-  // person already in phonebook?
-  // ask user if they want to update listing
-  const matchingPerson = personsState.value.find(p => p.name.toLowerCase() === nameState.value.toLowerCase())
+  // Is the person already in phonebook?
+  const matchingPerson = personInPhonebook(nameState.value, personsState.value)
   if (matchingPerson) {
-    const updatedPerson = { ...matchingPerson, "number": phonenumberState.value}
-
-    update(matchingPerson.id, updatedPerson)
-
-    nameState.setter('')
-    phonenumberState.setter('')
-    
-    personsState.setter(
-      personsState.value
-      .map(originalPerson => originalPerson.id === matchingPerson.id
-        ? updatedPerson
-        : originalPerson
+    // ask user if they want to update listing
+    update(matchingPerson.id, {...matchingPerson, 'number': phonenumberState.value})
+    .then(updatedPerson => {
+      messageState.setter(`${matchingPerson.name}'s entry was successfully updated!`)
+      nameState.setter('')
+      phonenumberState.setter('')
+      personsState.setter(
+        personsState.value
+        .map(originalPerson => originalPerson.id === matchingPerson.id
+          ? updatedPerson
+          : originalPerson
+        )
       )
-    )
+    })
+    .catch(reason => {
+      messageState.setter('There was an error!')
+      console.log(`Couldn't update person ${matchingPerson.id}: ${reason}`)
+    })
     
     return
   }
   
-  // happy path
+  // Create since they're not in the phonebook already
   create({
     id: max(personsState.value) + 1,
     name: nameState.value,
     number: phonenumberState.value,
   })
   .then(returnedListing => {
+    messageState.setter(`${nameState.value} was added to the phonebook!`)
     nameState.setter('')
     phonenumberState.setter('')
     personsState.setter(personsState.value.concat(returnedListing))

@@ -12,6 +12,7 @@ import { getAll } from './services/phonebook'
 import PhonebookView  from './components/PhonebookView'
 import EntryForm      from './components/EntryForm'
 import QueryForm      from './components/QueryForm'
+import Notification   from './components/Notification'
 
 // main
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
   const personsState      = NewState(defaults.persons)
   const phonenumberState  = NewState(defaults.phonenumber)
   const queryState        = NewState(defaults.query)
+  const errorMessageState = NewState("")
   
   // fetch persons from database
   useEffect(() => {
@@ -30,12 +32,17 @@ const App = () => {
 
   return (
     <div>
+      <Notification
+        messageState={errorMessageState}
+      >
+      </Notification>
       <h2>Phonebook</h2>
       <div>
         <EntryForm
           nameState={nameState}
           phonenumberState={phonenumberState}
           personsState={personsState}
+          messageState={errorMessageState}
         >
         </EntryForm>
       </div>
@@ -43,7 +50,9 @@ const App = () => {
       <h3>Filter by name: </h3>
       <div>
         <QueryForm
-          queryState={queryState}>
+          queryState={queryState}
+          messageState={errorMessageState}
+        >
         </QueryForm>
       </div>
       <div>

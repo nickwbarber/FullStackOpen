@@ -20,13 +20,13 @@ const getInputHandler = stateObject => {
   }
 }
 
-const EntryForm = ({ nameState, phonenumberState, personsState }) => {
+const EntryForm = ({ nameState, phonenumberState, personsState, messageState }) => {
 
   const nameInputHandler        = getInputHandler(nameState)
   const phonenumberInputHandler = getInputHandler(phonenumberState)
 
   return (
-    <form onSubmit={handleSubmit(nameState, phonenumberState, personsState)}>
+    <form onSubmit={handleSubmit(nameState, phonenumberState, personsState, messageState)}>
       <h3>new entry</h3>
       <div>
         name: <input
