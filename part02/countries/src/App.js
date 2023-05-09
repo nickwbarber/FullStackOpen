@@ -23,7 +23,7 @@ const App = () => {
   useEffect(() => {
     setMatchedCountries(countries?
       fuzzyFilterCountriesByName(countries, query)
-    : countries)
+    : null)
   }, [countries, query])
 
   useEffect(() => {
