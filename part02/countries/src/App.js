@@ -66,6 +66,8 @@ const App = () => {
       <CountryList
         countries={matchedCountries}
         hasUserSearched={hasUserSearched}
+        setCountryToDisplay={setCountryToDisplay}
+        setMatchedCountries={setMatchedCountries} 
       />
       <CountryInfoDisplay
         country={countryToDisplay}
