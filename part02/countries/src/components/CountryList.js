@@ -3,7 +3,7 @@ const SEARCH_INSTRUCTION_MESSAGE = "Type a country name in the search bar."
 const TOO_MANY_RESULTS_MESSAGE = "Too many results! Try typing more."
 const LOADING_MESSAGE = "loading..."
 
-export const CountryList = ({ countries, hasUserSearched }) =>
+export const CountryList = ({ countries }) =>
   countries === null
   ? <div>{LOADING_MESSAGE}</div>
   : countries.length === 0

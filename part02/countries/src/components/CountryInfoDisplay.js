@@ -1,4 +1,6 @@
-export const CountryInfoDisplay = ( { country }) => {
+import { WeatherDisplay } from "./WeatherDisplay"
+
+export const CountryInfoDisplay = ( { country, weather }) => {
   return country !== null && typeof(country) === 'object' && country.name ?
     <div>
       <h1>{country.name.common}</h1>
@@ -15,6 +17,10 @@ export const CountryInfoDisplay = ( { country }) => {
         }
       </ul>
       <img src={country.flags.png} alt={country.flags.alt}/>
+      <WeatherDisplay
+        country={country}
+        weather={weather}
+      />
     </div>
     : <div></div>
 }

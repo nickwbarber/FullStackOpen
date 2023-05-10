@@ -1,10 +1,14 @@
+// external imports
 import { useEffect, useState } from 'react'
-import { QueryForm } from './components/QueryForm'
-import { CountryList } from './components/CountryList'
-import { CountryInfoDisplay } from './components/CountryInfoDisplay'
-import { getCountries } from './services/api'
+
+// helper functions
+import { getCountries, getWeatherData } from './services/api'
 import { fuzzyFilterCountriesByName } from './util'
-import { render, renderHook } from '@testing-library/react'
+
+// components
+import { QueryForm } from './components/QueryForm'
+import { CountryInfoDisplay } from './components/CountryInfoDisplay'
+import { CountryList } from './components/CountryList'
 
 
 const App = () => {
@@ -12,26 +16,45 @@ const App = () => {
   const [ countries, setCountries ] = useState(null)
   const [ matchedCountries, setMatchedCountries ] = useState(null)
   const [ hasUserSearched, setHasUserSearched ] = useState(false)
-  const [ countryToDisplay, setCountryToDisplay ] = useState({})
+  const [ countryToDisplay, setCountryToDisplay ] = useState(null)
+  const [ weatherData, setWeatherData ] = useState(null)
 
+  // fetch country data
   useEffect(() => {
     getCountries().then(data => {
       setCountries(data)
     })
   }, [])
-
+  
+  // fetch weather data
   useEffect(() => {
-    setMatchedCountries(countries?
+    if (!countryToDisplay) return
+    (async () => {
+      const res = await getWeatherData({
+        lat: countryToDisplay.capitalInfo.latlng[0],
+        lon: countryToDisplay.capitalInfo.latlng[1],
+        appid: process.env.REACT_APP_WEATHER_API_KEY
+      })
+      setWeatherData(res.data)
+    })()
+  } , [countryToDisplay])
+
+  // results from country search
+  useEffect(() => {
+    if (!countries) return
+    setMatchedCountries(
       fuzzyFilterCountriesByName(countries, query)
-    : null)
+    )
   }, [countries, query])
 
+  // set country to display once the search completes
   useEffect(() => {
-    setCountryToDisplay(matchedCountries?
+    if (!matchedCountries) return
+    setCountryToDisplay(
       matchedCountries.length === 1?
         matchedCountries[0]
-      : {}
-    : {})
+      : null
+    )
   }, [matchedCountries])
 
   return (
@@ -46,6 +69,7 @@ const App = () => {
       />
       <CountryInfoDisplay
         country={countryToDisplay}
+        weather={weatherData}
       />
     </div>
   )
