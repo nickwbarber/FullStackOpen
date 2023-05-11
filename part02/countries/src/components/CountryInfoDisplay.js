@@ -1,7 +1,13 @@
 import { WeatherDisplay } from "./WeatherDisplay"
+import { useCountryState } from "./CountryContext"
 
-export const CountryInfoDisplay = ( { country, weather }) => {
-  return country !== null && typeof(country) === 'object' && country.name ?
+export const CountryInfoDisplay = () => {
+  const countryState = useCountryState() 
+  const country = countryState.selectedCountry
+  
+  if (Object.keys(country).length === 0) {return (<></>)}
+
+  return (
     <div>
       <h1>{country.name.common}</h1>
       <p>
@@ -17,10 +23,7 @@ export const CountryInfoDisplay = ( { country, weather }) => {
         }
       </ul>
       <img src={country.flags.png} alt={country.flags.alt}/>
-      <WeatherDisplay
-        country={country}
-        weather={weather}
-      />
+      <WeatherDisplay/>
     </div>
-    : <div></div>
+  )
 }

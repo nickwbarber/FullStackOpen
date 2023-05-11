@@ -1,5 +1,26 @@
-export const WeatherDisplay = ({ country, weather }) => {
-  if (!weather) return
+import { useEffect, useState } from "react"
+import { getWeatherData } from "../services/api"
+import { useCountryState } from "./CountryContext"
+
+export const WeatherDisplay = () => {
+  const country = useCountryState().selectedCountry
+  const [ weather, setWeather ] = useState({})
+  
+  const isCountryLoaded = Object.keys(country).length !== 0
+  
+  useEffect(() => {
+    const getWeather = async () =>{
+      const [ lat, lon ] = country.capitalInfo.latlng
+      const weatherData = await getWeatherData({ lat, lon })
+      setWeather(weatherData)
+    }
+    isCountryLoaded && getWeather()
+  }, [country.capitalInfo.latlng, isCountryLoaded])
+  
+  const isWeatherLoaded = Object.keys(weather).length !== 0
+
+  if (!isWeatherLoaded) return <div></div>
+
   return (
     <div>
       <h2>Weather in {country.capital[0]}</h2>

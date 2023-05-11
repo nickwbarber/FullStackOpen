@@ -1,44 +1,53 @@
+import { useCountryState, useCountryDispatch } from "./CountryContext"
+
 const MAX_SEARCH_RESULT_LENGTH = 10
 const SEARCH_INSTRUCTION_MESSAGE = "Type a country name in the search bar."
 const TOO_MANY_RESULTS_MESSAGE = "Too many results! Try typing more."
 const LOADING_MESSAGE = "loading..."
 
-const handleShowButton = ({country, setCountryToDisplay, setMatchedCountries}) => () => {
-  setCountryToDisplay(country)
-}
+export const CountryList = () => {
+  const countryState = useCountryState()
+  const countryDispatch = useCountryDispatch()
+  const searchResults = countryState.searchResults
+  
+  if (countryState.countries.length === 0) {
+    return (<div>{LOADING_MESSAGE}</div>)
+  }
 
-const ShowButton = ({ country, setCountryToDisplay, setMatchedCountries }) => {
+  if (searchResults.length === 0) {
+    return (<div>{SEARCH_INSTRUCTION_MESSAGE}</div>)
+  }
+
+  if (searchResults.length === 1) {
+    return (<div></div>)
+  }
+
+  if (searchResults.length > MAX_SEARCH_RESULT_LENGTH) {
+    return (<div>{TOO_MANY_RESULTS_MESSAGE}</div>)
+  }
+
+  const handleClick = country => {
+    countryDispatch({
+      type: 'select_country',
+      country: country,
+    })
+    countryDispatch({
+      type: 'clear_search_results',
+    })
+    searchResults.length = 0
+  }
+
   return (
-    <button
-      onClick={handleShowButton({
-        country: country,
-        setCountryToDisplay: setCountryToDisplay,
-        setMatchedCountries: setMatchedCountries,
-      })}
-    >
-      show weather
-    </button>
+    <ul>
+      {searchResults.map((country, i) =>
+        <div key={i}>
+          <li>
+            {country.name.common}
+          </li> <button onClick={() => handleClick(country)}>
+            select
+          </button>
+        </div>
+      )}
+    </ul>
   )
 }
-
-export const CountryList = ({ countries, setCountryToDisplay, setMatchedCountries }) =>
-  countries === null
-  ? <div>{LOADING_MESSAGE}</div>
-  : countries.length === 0
-    ? <div>{SEARCH_INSTRUCTION_MESSAGE}</div>
-    : countries.length === 1
-      ? <div></div>
-      : countries.length <= MAX_SEARCH_RESULT_LENGTH
-        ? <ul>
-            {countries.map((country, i) =>
-              <li key={i}>
-                {country.name.common}
-                <ShowButton
-                  country={country}
-                  setCountryToDisplay={setCountryToDisplay}
-                  setMatchedCountries={setMatchedCountries}
-                />
-              </li>
-            )}
-          </ul>
-        : <div>{TOO_MANY_RESULTS_MESSAGE}</div>
